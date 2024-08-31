@@ -1,0 +1,5 @@
+Federer   Roger     Suiza       1000
+Nadal     Rafael    Espania     980
+Djokovic  Novak     Serbia      960
+Murray    Andy      Reino_Unido 920
+Wawrinka  Stan      Suiza       900
