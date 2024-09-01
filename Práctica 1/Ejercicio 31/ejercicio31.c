@@ -7,15 +7,20 @@ typedef struct
 } TR;
 
 void cargarArchivo();
+unsigned int contar();
 void buscar(unsigned short int posicion);
 
 short int main()
 {
-    unsigned int posicion;
+    unsigned int posicion, maxPosicion;
     cargarArchivo();
-    printf("Busque a un jugador por su posicion en el archivo: ");
-    scanf("%u", &posicion);
-    buscar(posicion);
+    maxPosicion = contar();
+    do
+    {
+        printf("Busque a un jugador por su posicion en el archivo: ");
+        scanf("%u", &posicion);
+    } while (posicion > maxPosicion || posicion == 0);
+    buscar(posicion - 1);
     return 0;
 }
 
@@ -38,6 +43,17 @@ void cargarArchivo()
     // Cerrar archivos
     fclose(archT);
     fclose(archB);
+}
+
+unsigned int contar()
+{
+    FILE *archB;
+    unsigned int ultimo;
+    archB = fopen("jugadores.dat", "rb");
+    fseek(archB, 0, 2);
+    ultimo = ftell(archB) / sizeof(TR);
+    fclose(archB);
+    return ultimo;
 }
 
 void buscar(unsigned short int posicion)
