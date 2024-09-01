@@ -52,7 +52,7 @@ void listar(char ciudadMin[LONGITUD], byte *minDia)
         printf("Ocurrio un error en la lectura del archivo");
     else
     {
-        printf("Ciudad\tTemperatura maxima\tTemperatura minima\n");
+        printf("  Ciudad\tTemperatura maxima\tTemperatura minima\n");
         fread(&registro, sizeof(TR), 1, archB);
         strcpy(VC, registro.ciudad);
         min = tMin = registro.tempMinima;
@@ -66,21 +66,25 @@ void listar(char ciudadMin[LONGITUD], byte *minDia)
                 if (registro.tempMaxima > tMax)
                     tMax = registro.tempMaxima;
                 if (registro.tempMinima < tMin)
-                {
                     tMin = registro.tempMinima;
-                    if (registro.tempMinima < min)
-                    {
-                        min = registro.tempMinima;
-                        strcpy(ciudadMin, registro.ciudad);
-                        *minDia = registro.dia;
-                    }
-                }
             }
-            else
+            else // VC != registro.ciudad
             {
-                /* code */
+                // Seguir tabla
+                printf("%9s\t%10.1f\t%19.1f\n", VC, tMax, tMin);
+                // Reiniciar variables
+                strcpy(VC, registro.ciudad);
+                tMax = registro.tempMaxima;
+                tMin = registro.tempMinima;
+            }
+            if (registro.tempMinima < min)
+            {
+                min = registro.tempMinima;
+                strcpy(ciudadMin, registro.ciudad);
+                *minDia = registro.dia;
             }
             fread(&registro, sizeof(TR), 1, archB);
         }
+        printf("%9s\t%10.1f\t%19.1f\n", VC, tMax, tMin);
     }
 }
