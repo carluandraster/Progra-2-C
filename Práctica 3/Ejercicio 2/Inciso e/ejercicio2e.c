@@ -30,38 +30,39 @@ void ingresarVectores(int A[MAXELEM], unsigned int *N, int B[MAXELEM], unsigned 
 
 void mezclar(int A[MAXELEM], unsigned int N, unsigned i, int B[MAXELEM], unsigned int M, unsigned j, int C[MAXELEM * 2], unsigned int *Z)
 {
-    if (i == N - 1 && j < M - 1)
+    if (i < N || j < M)
     {
-        C[*Z] = B[j];
-        ++*Z;
-        mezclar(A, N, i, B, M, j + 1, C, Z);
+        if (i == N)
+        {
+            C[*Z] = B[j];
+            ++*Z;
+            mezclar(A, N, i, B, M, j + 1, C, Z);
+        }
+        else if (j == M)
+        {
+            C[*Z] = A[i];
+            ++*Z;
+            mezclar(A, N, i + 1, B, M, j, C, Z);
+        }
+        else if (A[i] == B[j])
+        {
+            C[*Z] = A[i];
+            ++*Z;
+            mezclar(A, N, i + 1, B, M, j + 1, C, Z);
+        }
+        else if (A[i] < B[j])
+        {
+            C[*Z] = A[i];
+            ++*Z;
+            mezclar(A, N, i + 1, B, M, j, C, Z);
+        }
+        else
+        {
+            C[*Z] = B[j];
+            ++*Z;
+            mezclar(A, N, i, B, M, j + 1, C, Z);
+        }
     }
-    else if (j == M - 1 && i < N - 1)
-    {
-        C[*Z] = A[i];
-        ++*Z;
-        mezclar(A, N, i + 1, B, M, j, C, Z);
-    }
-    else
-    {
-        /* code */
-    }
-
-    C[*Z] = A[i] < B[j] ? A[i] : B[j];
-    ++*Z;
-
-    if (A[i] == B[j])
-    {
-        i++;
-        j++;
-    }
-    else
-    {
-        /* code */
-    }
-
-    if (i < N - 1 || j < M - 1)
-        mezclar(A, N, i, B, M, j, C, Z);
 }
 
 void mostrarElementos(int VECTOR[MAXELEM], unsigned int N)
