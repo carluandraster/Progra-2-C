@@ -54,5 +54,30 @@ int denominador(fraccion f){
 }
 
 fraccion sumar(fraccion f1,fraccion f2){
+    unsigned MCM = mcm(denominador(f1),denominador(f2));
+    return simplificar(crear(numerador(f1)*MCM+numerador(f2)*MCM,MCM));
+}
 
+fraccion restar(fraccion f1,fraccion f2){
+    unsigned MCM = mcm(denominador(f1),denominador(f2));
+    return simplificar(crear(numerador(f1)*MCM-numerador(f2)*MCM,MCM));
+}
+
+fraccion multiplicar(fraccion f1,fraccion f2){
+    return simplificar(crear(numerador(f1)*numerador(f2),denominador(f1)*denominador(f2)));
+}
+
+fraccion dividir(fraccion f1,fraccion f2){
+    return simplificar(crear(numerador(f1)*denominador(f2),denominador(f1)*numerador(f2)));
+}
+
+fraccion simplificar(fraccion f){
+    unsigned MCD = mcd(numerador(f),denominador(f));
+    f.Numerador/=MCD;
+    f.Denominador/=MCD;
+    return crear(f.Numerador,f.Denominador);
+}
+
+short iguales(fraccion f1,fraccion f2){
+    return numerador(f1)*denominador(f2) == numerador(f2)*denominador(f1);   
 }
