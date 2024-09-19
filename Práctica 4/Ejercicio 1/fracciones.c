@@ -12,7 +12,7 @@ unsigned RESTO (int dividendo, int divisor){
             return 0;
 }
 
-int mcd(int a, int b){
+unsigned mcd(int a, int b){
     unsigned resto;
     if (b!=0)
     {
@@ -31,7 +31,7 @@ int mcd(int a, int b){
 unsigned mcm(int a, int b){
     unsigned maxComDiv=mcd(a,b);
     if (maxComDiv!=0)
-        return a*b>=0 ? a*b % maxComDiv : -a*b % maxComDiv;
+        return a*b>=0 ? a*b / maxComDiv : -a*b / maxComDiv;
     else
         return 0;
 }
@@ -53,14 +53,21 @@ int denominador(fraccion f){
     return f.Denominador;
 }
 
+fraccion simplificar(fraccion f){
+    unsigned MCD = mcd(numerador(f),denominador(f));
+    f.Numerador/=MCD;
+    f.Denominador/=MCD;
+    return crear(f.Numerador,f.Denominador);
+}
+
 fraccion sumar(fraccion f1,fraccion f2){
     unsigned MCM = mcm(denominador(f1),denominador(f2));
-    return simplificar(crear(numerador(f1)*MCM+numerador(f2)*MCM,MCM));
+    return simplificar(crear(numerador(f1)*MCM/denominador(f1)+numerador(f2)*MCM/denominador(f2),MCM));
 }
 
 fraccion restar(fraccion f1,fraccion f2){
     unsigned MCM = mcm(denominador(f1),denominador(f2));
-    return simplificar(crear(numerador(f1)*MCM-numerador(f2)*MCM,MCM));
+    return simplificar(crear(numerador(f1)*MCM/denominador(f1)-numerador(f2)*MCM/denominador(f2),MCM));
 }
 
 fraccion multiplicar(fraccion f1,fraccion f2){
@@ -69,13 +76,6 @@ fraccion multiplicar(fraccion f1,fraccion f2){
 
 fraccion dividir(fraccion f1,fraccion f2){
     return simplificar(crear(numerador(f1)*denominador(f2),denominador(f1)*numerador(f2)));
-}
-
-fraccion simplificar(fraccion f){
-    unsigned MCD = mcd(numerador(f),denominador(f));
-    f.Numerador/=MCD;
-    f.Denominador/=MCD;
-    return crear(f.Numerador,f.Denominador);
 }
 
 short iguales(fraccion f1,fraccion f2){

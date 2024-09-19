@@ -4,9 +4,10 @@
 void ingresarFraccion (fraccion *f);
 void menu(unsigned short *);
 
-short main(){
+int main(){
     fraccion f1,f2,res;
     unsigned short opcion;
+    int n1,n2;
     printf("FRACCION 1\n");
     ingresarFraccion(&f1);
     printf("FRACCION 2\n");
@@ -40,9 +41,10 @@ short main(){
         }
         menu(&opcion);
     }
+    return 0;
 }
 
-void ingresarFraccion (fraccion *f1){
+void ingresarFraccion (fraccion *f){
     int num,den;
     printf("Ingrese numerador: ");
     scanf("%d",&num);
@@ -51,14 +53,18 @@ void ingresarFraccion (fraccion *f1){
         printf("Ingrese denominador: ");
         scanf("%d",&den);
     } while (den == 0);
+    *f = crear(num,den);
 }
 
 void menu (unsigned short *opcion){
-    printf("Menu de opciones\n");
-    printf("1 - Sumar fracciones\n");
-    printf("2 - Restar fraccion 2 a fraccion 1\n");
-    printf("3 - Multiplicar fracciones\n");
-    printf("4 - Dividir fraccion 1 por fraccion 2\n");
-    printf("5 - Salir\n");
-    scanf("%hu",opcion);
+    do
+    {
+        printf("Menu de opciones\n");
+        printf("1 - Sumar fracciones\n");
+        printf("2 - Restar fraccion 2 a fraccion 1\n");
+        printf("3 - Multiplicar fracciones\n");
+        printf("4 - Dividir fraccion 1 por fraccion 2\n");
+        printf("5 - Salir\n");
+        scanf("%hu",opcion);
+    } while (*opcion == 0 || *opcion>5); 
 }
