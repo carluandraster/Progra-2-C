@@ -1,12 +1,15 @@
 #include "texto.h"
+#include <stdlib.h>
 
 texto crear(char *c){
     texto aux;
     unsigned i = 0;
     while (c[i] != '\0')
         i++;
-    aux.N = i+1;
+    aux.N = i;
     aux.cadena = (char *) malloc(aux.N * sizeof(char));
+    for (i = 0; i < aux.N; i++)
+        aux.cadena[i] = c[i];
     return aux;
 }
 
@@ -20,6 +23,7 @@ unsigned tamanio (texto t){
 
 void imprimir(texto t){
     unsigned i;
+    printf("%u\n",t.N);
     for (i = 0; i < t.N; i++)
         printf("%c",t.cadena[i]);
 }
@@ -36,8 +40,9 @@ char caracterEn(texto t, unsigned posicion){
 
 texto concatenar (texto t1,texto t2){
     texto aux;
+    aux.cadena = (char *) malloc (sizeof(char)*(t1.N+t2.N));
+    aux.N = t1.N+t2.N;
     unsigned i;
-    aux.N = t1.N + t2.N;
     for (i = 0; i < t1.N; i++)
         aux.cadena[i] = t1.cadena[i];
     for (i = 0; i < t2.N; i++)
@@ -64,9 +69,14 @@ texto subTexto(texto T,unsigned desde,unsigned hasta){
 
 short comienzaCon(texto T, texto prefijo){
     unsigned i = 0;
-    while (i<prefijo.N)
-    {
-        /* code */
-    }
-    
+    while (i<prefijo.N && T.cadena[i] == prefijo.cadena[i])
+        i++;
+    return i == prefijo.N;
+}
+
+short terminaCon (texto T,texto sufijo){
+    unsigned i = 0;
+    while (i<sufijo.N && T.cadena[T.N-i] == sufijo.cadena[sufijo.N-1])
+        i++;
+    return i == sufijo.N;
 }
