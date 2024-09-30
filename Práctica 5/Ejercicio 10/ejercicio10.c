@@ -1,81 +1,80 @@
 #include <stdio.h>
-#include "colaDinamica.h"
+#include "../Ejercicio 09/pilaDinamica.h"
 #define MAXELEM 100
-#define CENTINELA '.'
 
-void ingresarExpresion(TCola *A);
-void chequearParentesis(TCola *A);
-void chequearCorchetes(TCola *A);
-void chequearLlaves(TCola *A);
+void chequearParentesis(char expresion[MAXELEM]);
+void chequearCorchetes(char expresion[MAXELEM]);
+void chequearLlaves(char expresion[MAXELEM]);
 
 int main()
 {
-    TCola A;
-    IniciaC(&A);
-    ingresarExpresion(&A);
+    char expresion[MAXELEM];
+    printf("Ingrese una expresion: ");
+    scanf("%s", expresion);
     // Inciso a
-    chequearParentesis(&A);
+    chequearParentesis(expresion);
     // Inciso b
-    chequearCorchetes(&A);
-    chequearLlaves(&A);
+    chequearCorchetes(expresion);
+    chequearLlaves(expresion);
     return 0;
 }
 
-void ingresarExpresion(TCola *A)
+void chequearParentesis(char expresion[MAXELEM])
 {
-    char expresion[MAXELEM];
     unsigned short i = 0;
-    printf("Ingrese una expresion: ");
-    scanf("%s", expresion);
-    while (expresion[i] != '\0')
+    TPila parentesis;
+    TElementoP x;
+    IniciaP(&parentesis);
+    while (expresion[i] != '\0' && (expresion[i] != ')' || !VaciaP(parentesis)))
     {
-        poneC(A, expresion[i]);
+        if (expresion[i] == '(')
+            poneP(&parentesis, expresion[i]);
+        else if (expresion[i] == ')')
+            sacaP(&parentesis, &x);
         i++;
     }
-}
-
-void chequearParentesis(TCola *A)
-{
-    TElementoC x;
-    unsigned short contaAbre = 0, contaCierra = 0;
-    short faltaIzq = 0;
-    while (x != CENTINELA)
-    {
-        sacaC(A, &x);
-        poneC(A, x);
-        contaAbre += x == '(';
-        contaCierra += x == ')';
-        if (contaCierra > contaAbre)
-        {
-            faltaIzq = 1;
-        }
-    }
-    if (faltaIzq)
+    if (expresion[i] != '\0')
         printf("Falta abrir parentesis.\n");
-
-    if (contaAbre > contaCierra)
+    else if (!VaciaP(parentesis))
         printf("Falta cerrar parentesis.\n");
 }
 
-void chequearCorchetes(TCola *A)
+void chequearCorchetes(char expresion[MAXELEM])
 {
-    TCola aux;
-    TElementoC x;
-    unsigned short contaAbre = 0, contaCierra = 0;
-    short faltaIzq;
-    while (!VaciaC(*A))
+    unsigned short i = 0;
+    TPila corchetes;
+    TElementoP x;
+    IniciaP(&corchetes);
+    while (expresion[i] != '\0' && (expresion[i] != ']' || !VaciaP(corchetes)))
     {
-        sacaC(A, &x);
-        contaAbre += x == '(';
-        contaCierra += x == ')';
-        if (contaCierra > contaAbre)
-        {
-            faltaIzq = 1;
-        }
+        if (expresion[i] == '[')
+            poneP(&corchetes, expresion[i]);
+        else if (expresion[i] == ']')
+            sacaP(&corchetes, &x);
+        i++;
     }
-    if (faltaIzq)
-        printf("Falta abrir parentesis.\n");
+    if (expresion[i] != '\0')
+        printf("Falta abrir corchetes.\n");
+    else if (!VaciaP(corchetes))
+        printf("Falta cerrar corchetes.\n");
+}
 
-    if (contaAbre > contaCierra)
-        printf("Falta cerrar parentesis.\n");
+void chequearLlaves(char expresion[MAXELEM])
+{
+    unsigned short i = 0;
+    TPila llaves;
+    TElementoP x;
+    IniciaP(&llaves);
+    while (expresion[i] != '\0' && (expresion[i] != '}' || !VaciaP(llaves)))
+    {
+        if (expresion[i] == '{')
+            poneP(&llaves, expresion[i]);
+        else if (expresion[i] == '}')
+            sacaP(&llaves, &x);
+        i++;
+    }
+    if (expresion[i] != '\0')
+        printf("Falta abrir llaves.\n");
+    else if (!VaciaP(llaves))
+        printf("Falta cerrar llaves.\n");
 }
