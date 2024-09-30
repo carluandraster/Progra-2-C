@@ -15,7 +15,7 @@ int main()
     IniciaP(&C);
     ingresarNumero(&A);
     ingresarNumero(&B);
-    suma(A, B, &C);
+    suma(A, B, &C); // A+B=C
     mostrarPila(C);
     return 0;
 }
@@ -35,16 +35,48 @@ void ingresarNumero(TPila *A)
 
 void suma(TPila A, TPila B, TPila *C)
 {
+    TElementoP x, y, z, t = 0;
     while (!VaciaP(A) && !VaciaP(B))
     {
-        /* code */
+        sacaP(&A, &x);
+        sacaP(&B, &y);
+        x -= '0';
+        y -= '0';
+        z = x + y + t;
+        t = z / 10;
+        z %= 10;
+        z += '0';
+        poneP(C, z);
     }
+
     while (!VaciaP(A))
     {
-        /* code */
+        sacaP(&A, &x);
+        x -= '0';
+        z = x + t;
+        t = z / 10;
+        z %= 10;
+        z += '0';
+        poneP(C, z);
     }
     while (!VaciaP(B))
     {
-        /* code */
+        sacaP(&B, &x);
+        x -= '0';
+        z = x + t;
+        t = z / 10;
+        z %= 10;
+        z += '0';
+        poneP(C, z);
+    }
+}
+
+void mostrarPila(TPila C)
+{
+    TElementoP x;
+    while (!VaciaP(C))
+    {
+        sacaP(&C, &x);
+        printf("%c", x);
     }
 }
