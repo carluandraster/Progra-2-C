@@ -33,9 +33,36 @@ void ingresarCola(TCola *C)
 void mostrarCola(TCola *C, float *promedio, unsigned *maxLegajo)
 {
     TElementoC x;
-    unsigned contador, acumulador;
-    tiempo horaInicial;
+    unsigned contador, acumulador, tEspera, tInicio, tFin, maxEspera;
+    THora horaInicial, horaInicio, horaFin;
 
-    contador = acumulador = 0;
+    contador = acumulador = maxEspera = tFin = 0;
     horaInicial = crearHora(12, 0, 0);
+
+    printf("Legajo\tHora inicio\tHora final\n");
+    while (!VaciaC(*C))
+    {
+        sacaC(C, &x);
+        if (tFin <= x.arribo) // Llegó después de que se liberara el horno
+        {
+            tInicio = x.arribo;
+            tEspera = 0;
+        }
+        else // Esperó en la cola
+        {
+            tInicio = tFin;
+            tEspera = tInicio - x.arribo;
+        }
+        if (tEspera > maxEspera)
+        {
+            maxEspera = tEspera;
+            *maxLegajo = x.legajo;
+        }
+        tFin = tInicio + x.tiempoHorno;
+        contador++;
+        acumulador += tEspera;
+        horaInicio = suma(horaInicial, tInicio);
+        horaFin = suma(horaInicio, tFin);
+        printf("%u\t %u:%u:%u\t %u:%u:%u\n", x.legajo, obtenerHora(horaInicio), obtenerMinuto(horaInicio), obtenerSegundo(horaInicio), obtenerHora(horaFin), obtenerMinuto(horaFin), obtenerSegundo(horaFin));
+    }
 }
