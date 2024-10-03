@@ -1,0 +1,11 @@
+manzana
+pera
+manzana
+uva
+pera
+naranja
+manzana
+pera
+naranja
+uva
+naranja
