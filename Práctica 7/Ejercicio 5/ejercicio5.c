@@ -81,7 +81,7 @@ unsigned short maxLong(arbol a)
 unsigned contHijosDer(arbol a)
 {
     if (a != NULL)
-        return a->der != NULL + contHijosDer(a->izq) + contHijosDer(a->der);
+        return (a->der != NULL) + contHijosDer(a->izq) + contHijosDer(a->der);
     else
         return 0;
 }
