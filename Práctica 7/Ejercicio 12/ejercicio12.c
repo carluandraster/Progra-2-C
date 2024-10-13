@@ -11,16 +11,20 @@ typedef nodo *arbol;
 
 void addnodo(arbol *a, TElementoA e);
 void cargarArbol(arbol *a);
-int busca(arbol a, int x);
+unsigned contar(arbol a, int A, int B);
 
 int main()
 {
     arbol a;
-    int x;
+    int A, B;
+
     cargarArbol(&a);
-    printf("Ingrese un numero: ");
-    scanf("%d", &x);
-    printf(busca(a, x) ? "El numero que ingreso se encuentra en el ABB.\n" : "El numero que ingreso no se encuentra en el ABB.\n");
+    printf("Ingrese A: ");
+    scanf("%d", &A);
+    printf("Ingrese B: ");
+    scanf("%d", &B);
+    printf("Cantidad de elementos mayores a %d y menores a %d: %u", A, B, contar(a, A, B));
+
     return 0;
 }
 
@@ -44,14 +48,14 @@ void cargarArbol(arbol *a)
     addnodo(&(*a)->der->der, 22);
 }
 
-int busca(arbol a, int x)
+unsigned contar(arbol a, int A, int B)
 {
     if (a == NULL)
         return 0;
-    else if (x == a->dato)
-        return 1;
-    else if (x < a->dato)
-        return busca(a->izq, x);
+    else if (a->dato >= B)
+        return contar(a->izq, A, B);
+    else if (a->dato <= A)
+        return contar(a->der, A, B);
     else
-        return busca(a->der, x);
+        return 1 + contar(a->izq, A, B) + contar(a->der, A, B);
 }

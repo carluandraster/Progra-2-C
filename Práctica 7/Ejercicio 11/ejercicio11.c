@@ -11,16 +11,13 @@ typedef nodo *arbol;
 
 void addnodo(arbol *a, TElementoA e);
 void cargarArbol(arbol *a);
-int busca(arbol a, int x);
+TElementoA minimo(arbol a);
 
 int main()
 {
     arbol a;
-    int x;
     cargarArbol(&a);
-    printf("Ingrese un numero: ");
-    scanf("%d", &x);
-    printf(busca(a, x) ? "El numero que ingreso se encuentra en el ABB.\n" : "El numero que ingreso no se encuentra en el ABB.\n");
+    printf("Elemento minimo: %d\n", minimo(a));
     return 0;
 }
 
@@ -44,14 +41,7 @@ void cargarArbol(arbol *a)
     addnodo(&(*a)->der->der, 22);
 }
 
-int busca(arbol a, int x)
+TElementoA minimo(arbol a)
 {
-    if (a == NULL)
-        return 0;
-    else if (x == a->dato)
-        return 1;
-    else if (x < a->dato)
-        return busca(a->izq, x);
-    else
-        return busca(a->der, x);
+    return a->izq == NULL ? a->dato : minimo(a->izq);
 }

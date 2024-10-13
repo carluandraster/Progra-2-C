@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define INFINITO 32000
 
 typedef int TElementoA;
 typedef struct nodo
@@ -11,16 +12,13 @@ typedef nodo *arbol;
 
 void addnodo(arbol *a, TElementoA e);
 void cargarArbol(arbol *a);
-int busca(arbol a, int x);
+int esABB(arbol a, int min, int max);
 
 int main()
 {
     arbol a;
-    int x;
     cargarArbol(&a);
-    printf("Ingrese un numero: ");
-    scanf("%d", &x);
-    printf(busca(a, x) ? "El numero que ingreso se encuentra en el ABB.\n" : "El numero que ingreso no se encuentra en el ABB.\n");
+    printf(esABB(a, -INFINITO, INFINITO) ? "El arbol es binario de busqueda.\n" : "El arbol no es binario de busqueda.\n");
     return 0;
 }
 
@@ -28,8 +26,7 @@ void addnodo(arbol *a, TElementoA e)
 {
     *a = (arbol)malloc(sizeof(nodo));
     (*a)->dato = e;
-    (*a)->izq = NULL;
-    (*a)->der = NULL;
+    (*a)->izq = (*a)->der = NULL;
 }
 
 void cargarArbol(arbol *a)
@@ -44,14 +41,15 @@ void cargarArbol(arbol *a)
     addnodo(&(*a)->der->der, 22);
 }
 
-int busca(arbol a, int x)
+int esABB(arbol a, int min, int max)
 {
-    if (a == NULL)
-        return 0;
-    else if (x == a->dato)
-        return 1;
-    else if (x < a->dato)
-        return busca(a->izq, x);
+    if (a != NULL)
+    {
+        if (a->dato <= min || a->dato >= max)
+            return 0;
+        else
+            return esABB(a->izq, min, a->dato) && esABB(a->der, a->dato, max);
+    }
     else
-        return busca(a->der, x);
+        return 1;
 }
