@@ -5,11 +5,11 @@ typedef int TElementoA;
 typedef struct nodo
 {
     TElementoA dato;
-    struct nodo *izq,*der;
+    struct nodo *izq, *der;
 } nodo;
 typedef nodo *arbol;
 
-void addnodo(arbol *a,TElementoA e);
+void addnodo(arbol *a, TElementoA e);
 void cargarArbol(arbol *a);
 unsigned int alturaArbolGral(arbol a);
 
@@ -17,11 +17,12 @@ int main()
 {
     arbol a;
     cargarArbol(&a);
-    printf("Altura del arbol general: %u\n",alturaArbolGral(a));
+    printf("Altura del arbol general: %u\n", alturaArbolGral(a));
     return 0;
 }
 
-void addnodo(arbol *a,TElementoA e){
+void addnodo(arbol *a, TElementoA e)
+{
     *a = (arbol)malloc(sizeof(nodo));
     (*a)->dato = e;
     (*a)->izq = (*a)->der = NULL;
@@ -46,14 +47,15 @@ void cargarArbol(arbol *a)
     addnodo(&(*a)->izq->der->der->der->izq->der->der, 40);
 }
 
-unsigned int alturaArbolGral(arbol a){
-    unsigned int altIzq,altDer;
+unsigned int alturaArbolGral(arbol a)
+{
+    unsigned int altIzq, altDer;
     if (a == NULL)
         return 0;
     else
     {
         altIzq = alturaArbolGral(a->izq);
         altDer = alturaArbolGral(a->der);
-        return altIzq>altDer ? (a->izq!=NULL)+altIzq : (a->izq!=NULL)+altDer;
+        return altIzq >= altDer ? (a->izq != NULL) + altIzq : altDer;
     }
 }
