@@ -5,24 +5,23 @@ typedef int TElementoA;
 typedef struct nodo
 {
     TElementoA dato;
-    struct nodo *izq, *der;
+    struct nodo *izq,*der;
 } nodo;
 typedef nodo *arbol;
 
-void addnodo(arbol *a, TElementoA e);
+void addnodo(arbol *a,TElementoA e);
 void cargarArbol(arbol *a);
-unsigned int cantNodosNivImpares(arbol a,unsigned int nivel);
+unsigned int alturaArbolGral(arbol a);
 
 int main()
 {
     arbol a;
     cargarArbol(&a);
-    printf("Cantidad de nodos que habia en niveles impares: %u\n", cantNodosNivImpares(a,1));
+    printf("Altura del arbol general: %u\n",alturaArbolGral(a));
     return 0;
 }
 
-void addnodo(arbol *a, TElementoA e)
-{
+void addnodo(arbol *a,TElementoA e){
     *a = (arbol)malloc(sizeof(nodo));
     (*a)->dato = e;
     (*a)->izq = (*a)->der = NULL;
@@ -47,9 +46,14 @@ void cargarArbol(arbol *a)
     addnodo(&(*a)->izq->der->der->der->izq->der->der, 40);
 }
 
-unsigned int cantNodosNivImpares(arbol a, unsigned int nivel){
+unsigned int alturaArbolGral(arbol a){
+    unsigned int altIzq,altDer;
     if (a == NULL)
         return 0;
     else
-        return nivel%2 + cantNodosNivImpares(a->izq,nivel+1) + cantNodosNivImpares(a->der,nivel); 
+    {
+        altIzq = alturaArbolGral(a->izq);
+        altDer = alturaArbolGral(a->der);
+        return altIzq>altDer ? (a->izq!=NULL)+altIzq : (a->izq!=NULL)+altDer;
+    }
 }
