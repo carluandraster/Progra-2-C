@@ -59,11 +59,11 @@ Nodo *crearNodo(TElementoA valor)
 
 void cargarArbol(Arbol *a, Posicion *p)
 {
-    *a = crearNodo(1); // Raíz del árbol
+    *a = crearNodo(3); // Raíz del árbol
 
     (*a)->hijoIzq = crearNodo(2);                         // Hijo más izquierdo de la raíz
-    (*a)->hijoIzq->hermanoDer = crearNodo(3);             // Hermano derecho del primer hijo
-    (*a)->hijoIzq->hermanoDer->hermanoDer = crearNodo(4); // Otro hermano
+    (*a)->hijoIzq->hermanoDer = crearNodo(1);             // Hermano derecho del primer hijo
+    (*a)->hijoIzq->hermanoDer->hermanoDer = crearNodo(2); // Otro hermano
 
     // Agregamos hijos al nodo 2
     (*a)->hijoIzq->hijoIzq = crearNodo(5);
@@ -90,7 +90,7 @@ unsigned int cantidadNodos(Arbol a, Posicion p)
         c = HijoMasIzq(p, a);
         while (c != NULL)
         {
-            contador += 1 + cantidadNodos(a, HijoMasIzq(c, a));
+            contador += cantidadNodos(a, c);
             c = HermanoDer(c, a);
         }
     }
@@ -109,7 +109,7 @@ unsigned int cantidadClavesPares(Arbol a, Posicion p)
         c = HijoMasIzq(p, a);
         while (c != NULL)
         {
-            contador += (Info(c, a) % 2 == 0) + cantidadClavesPares(a, HijoMasIzq(c, a));
+            contador += cantidadClavesPares(a, c);
             c = HermanoDer(c, a);
         }
     }
@@ -183,7 +183,7 @@ short int cumple(Arbol a, Posicion p)
     short int aux = 1;
 
     if (!Nulo(p))
-        if (Info(p, a) == gradoDeUnNodo(a, p))
+        if (Info(p, a) == gradoDeUnNodo(a, p) || HijoMasIzq(p, a) == NULL)
         {
             c = HijoMasIzq(p, a);
             while (!Nulo(c) && aux)
@@ -204,15 +204,18 @@ void CUMPLE(Arbol a, Posicion p, short int *Cumple)
     Posicion c;
     if (Nulo(p))
         *Cumple = 1;
-    else
+    else if (Info(p, a) == gradoDeUnNodo(a, p) || HijoMasIzq(p, a) == NULL)
     {
         c = HijoMasIzq(p, a);
+        *Cumple = 1;
         while (!Nulo(c) && *Cumple)
         {
             CUMPLE(a, c, Cumple);
             c = HermanoDer(c, a);
         }
     }
+    else
+        *Cumple = 0;
 }
 
 void promedioSi(Arbol a, Posicion p, unsigned int K, unsigned int nivel, float *promedio, short int *error)
@@ -224,6 +227,11 @@ void promedioSi(Arbol a, Posicion p, unsigned int K, unsigned int nivel, float *
 
     if (Nulo(p))
         *error = 1;
+    else if (nivel == K) // Si K = 1
+    {
+        *promedio = Info(p, a);
+        *error = 0;
+    }
     else if (nivel + 1 == K)
     {
         *error = 0;

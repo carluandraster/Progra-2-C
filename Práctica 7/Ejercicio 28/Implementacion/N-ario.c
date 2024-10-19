@@ -16,30 +16,24 @@ int Nulo(Posicion p)
 Posicion HijoMasIzq(Posicion p, Arbol A)
 {
     if (p != NULL)
-    {
         return p->hijoIzq;
-    }
-    return NULL; // Si p es hoja o NULL, devolvemos NULL
+    // Si p es NULL, tira un error
 }
 
 // Devuelve el hermano a la derecha del nodo p
 Posicion HermanoDer(Posicion p, Arbol A)
 {
     if (p != NULL)
-    {
         return p->hermanoDer;
-    }
-    return NULL; // Si p es el extremo derecho o NULL, devolvemos NULL
+    // Si p es NULL, tira un error
 }
 
 // Devuelve el dato almacenado en la posición p
 TElementoA Info(Posicion p, Arbol A)
 {
     if (p != NULL)
-    {
         return p->dato;
-    }
-    return (TElementoA)NULL; // Si p es NULL, devolvemos un carácter nulo
+    // Si p es NULL, tira un error
 }
 
 // Devuelve la raíz del árbol
