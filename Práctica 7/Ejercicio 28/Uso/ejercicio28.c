@@ -10,15 +10,16 @@ unsigned int gradoDeUnNodo(Arbol a, Posicion p);
 void GRADO(Arbol a, Posicion p, unsigned int *grado);
 unsigned int nodosGradoImparEnNivelesImpares(Arbol a, Posicion p, unsigned int nivel);
 short int cumple(Arbol a, Posicion p);
-void CUMPLE(Arbol a, short int *Cumple);
-float promedioSi(Arbol a, unsigned int K, unsigned int nivel);
+void CUMPLE(Arbol a, Posicion p, short int *Cumple);
+void promedioSi(Arbol a, Posicion p, unsigned int K, unsigned int nivel, float *promedio, short int *error);
 
 int main()
 {
     Arbol a;
-    short int Cumple;
+    short int Cumple, error;
     unsigned int K, grado = 0;
     Posicion p;
+    float promedio;
 
     cargarArbol(&a, &p);
     printf("Cantidad de nodos: %u\n", cantidadNodos(a, p));                     // Inciso a
@@ -30,12 +31,16 @@ int main()
     printf("Cantidad de nodos de grado impar en niveles impares: %u\n", nodosGradoImparEnNivelesImpares(a, p, 1));
     // Inciso e
     printf(cumple(a, p) ? "(Funcion int) Para todas las claves salvo las de las hojas, su valor numerico es igual a la cantidad de hijos.\n" : "(Funcion int) Existen claves cuyos valores numericos no son iguales a sus cantidades de hijos.\n");
-    CUMPLE(a, &Cumple);
+    CUMPLE(a, p, &Cumple);
     printf(Cumple ? "(Funcion void) Para todas las claves salvo las de las hojas, su valor numerico es igual a la cantidad de hijos.\n" : "(Funcion void) Existen claves cuyos valores numericos no son iguales a sus cantidades de hijos.\n");
     // Inciso f
     printf("Ingrese un nivel K: ");
     scanf("%u", &K);
-    printf("Promedio de las claves del nivel K: %5.2f", promedioSi(a, K, 1));
+    promedioSi(a, p, K, 1, &promedio, &error);
+    if (error)
+        printf("No hay nodos en el nivel K.\n");
+    else
+        printf("Promedio de las claves del nivel K: %5.2f", promedio);
 
     return 0;
 }
@@ -186,9 +191,66 @@ short int cumple(Arbol a, Posicion p)
                 aux = aux && cumple(a, c);
                 c = HermanoDer(c, a);
             }
+            return aux;
         }
         else
             return 0;
+    else
+        return 1;
+}
 
-    return aux;
+void CUMPLE(Arbol a, Posicion p, short int *Cumple)
+{
+    Posicion c;
+    if (Nulo(p))
+        *Cumple = 1;
+    else
+    {
+        c = HijoMasIzq(p, a);
+        while (!Nulo(c) && *Cumple)
+        {
+            CUMPLE(a, c, Cumple);
+            c = HermanoDer(c, a);
+        }
+    }
+}
+
+void promedioSi(Arbol a, Posicion p, unsigned int K, unsigned int nivel, float *promedio, short int *error)
+{
+    TElementoA acumulador = 0;
+    unsigned int contador = 0;
+    Posicion c;
+    float prom, acumProm = 0;
+
+    if (Nulo(p))
+        *error = 1;
+    else if (nivel + 1 == K)
+    {
+        *error = 0;
+        c = HijoMasIzq(p, a);
+        while (!Nulo(c))
+        {
+            acumulador += Info(c, a);
+            contador++;
+            c = HermanoDer(c, a);
+        }
+        *promedio = (float)acumulador / contador;
+    }
+    else
+    { // nivel+1 < K
+        c = HijoMasIzq(p, a);
+        while (!Nulo(c))
+        {
+            promedioSi(a, c, K, nivel + 1, &prom, error);
+            if (!*error)
+            {
+                acumProm += prom;
+                contador++;
+            }
+            c = HermanoDer(c, a);
+        }
+        *error = contador == 0;
+        if (!*error)
+            *promedio = acumProm / contador;
+    }
 }
