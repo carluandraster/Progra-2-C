@@ -10,7 +10,7 @@ typedef struct Tvertice
 } Tvertice;
 typedef Tvertice TGrafo[MAX_VERTICES];
 
-void agregarRelacion(TGrafo G, unsigned int N, TElementoG vertice, TElementoG e);
+void agregarRelacion(TGrafo G[], unsigned int N, TElementoG vertice, TElementoG e);
 void cargarGrafo(TGrafo G[], unsigned int *N);
 unsigned int gradoEntrada(TElementoG vertice, TGrafo G[], unsigned int N);
 unsigned int gradoSalida(TElementoG vertice, TGrafo G[], unsigned int N);
@@ -35,19 +35,19 @@ int main()
     return 0;
 }
 
-void agregarRelacion(TGrafo G, unsigned int N, TElementoG vertice, TElementoG e)
+void agregarRelacion(TGrafo G[MAX_VERTICES], unsigned int N, TElementoG vertice, TElementoG e)
 {
     unsigned int i = 0;
     Tvertice *aux, *ant;
 
-    while (i < N && G[i].dato != vertice)
+    while (i < N && G[i]->dato != vertice)
         i++;
     if (i < N)
     {
         aux = (Tvertice *)malloc(sizeof(Tvertice));
         aux->dato = e;
         aux->sig = NULL;
-        ant = &G[i];
+        ant = G[i];
         while (ant->sig != NULL)
             ant = ant->sig;
         ant->sig = aux;
@@ -87,7 +87,7 @@ unsigned int gradoEntrada(TElementoG vertice, TGrafo G[MAX_VERTICES], unsigned i
 
     for (i = 0; i < N; i++)
     {
-        aux = G[i].sig;
+        aux = G[i]->sig;
         while (aux != NULL && aux->dato != vertice)
             aux = aux->sig;
         contador += aux != NULL;
@@ -101,9 +101,9 @@ unsigned int gradoSalida(TElementoG vertice, TGrafo G[MAX_VERTICES], unsigned in
     unsigned int i = 0, contador = 0;
     Tvertice *aux;
 
-    while (i < N && G[i].dato != vertice)
+    while (i < N && G[i]->dato != vertice)
         i++;
-    aux = G[i].sig;
+    aux = G[i]->sig;
     while (aux != NULL)
     {
         contador++;
@@ -118,9 +118,9 @@ unsigned int grado(TElementoG vertice, TGrafo G[MAX_VERTICES], unsigned int N)
     unsigned int i = 0;
     Tvertice *aux;
 
-    while (i < N && G[i].dato != vertice)
+    while (i < N && G[i]->dato != vertice)
         i++;
-    aux = G[i].sig;
+    aux = G[i]->sig;
     while (aux != NULL && aux->dato != vertice)
         aux = aux->sig;
 
