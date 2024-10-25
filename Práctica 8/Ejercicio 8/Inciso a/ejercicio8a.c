@@ -5,7 +5,7 @@ typedef unsigned short int byte;
 
 void cargarGrafo(byte A[][MAX_VERTICES],byte *N);
 byte grado(byte A[][MAX_VERTICES],byte N, byte vertice);
-void generarVector(byte A[][MAX_VERTICES],byte N,byte GRADOS[]);
+void generarVector(byte A[][MAX_VERTICES],byte N,byte M,byte GRADOS[]);
 void imprimirVector(byte GRADOS[],byte N);
 
 int main()
@@ -13,7 +13,7 @@ int main()
     byte A[MAX_VERTICES][MAX_VERTICES],N,GRADOS[MAX_VERTICES];
 
     cargarGrafo(A,&N);
-    generarVector(A,N,GRADOS);
+    generarVector(A,N,N,GRADOS);
     imprimirVector(GRADOS,N);
 
     return 0;
@@ -42,11 +42,11 @@ byte grado(byte A[][MAX_VERTICES],byte N, byte vertice){
             return A[N-1][vertice]+A[vertice][N-1]+grado(A,N-1,vertice);
 }
 
-void generarVector(byte A[][MAX_VERTICES],byte N,byte GRADOS[]){
-    if (N>0)
+void generarVector(byte A[][MAX_VERTICES],byte N,byte M,byte GRADOS[]){
+    if (M>0)
     {
-        GRADOS[N-1] = grado(A,N,N-1);
-        generarVector(A,N-1,GRADOS);
+        GRADOS[M-1] = grado(A,N,M-1);
+        generarVector(A,N,M-1,GRADOS);
     }
 }
 
