@@ -53,7 +53,7 @@ void cargarGrafo(TVertice G[], unsigned int *N)
 {
     unsigned i;
     TElementoG VERTICES[8] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
-    *N = 7;
+    *N = 8;
 
     for (i = 0; i < *N; i++)
     {
@@ -151,6 +151,7 @@ void amplitud(TVertice G[], unsigned int N, unsigned int *conexas)
         vertice = i + 65;
         poneC(&C, vertice);
         printf("%c ", vertice);
+        VV[i] = 1;
         while (!todosVisitados(VV, N) && !VaciaC(C))
         {
             sacaC(&C, &vertice);
