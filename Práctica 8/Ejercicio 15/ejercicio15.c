@@ -8,19 +8,19 @@ void cargarGrafo(byte G[][MAX_VERTICES], byte *N);
 byte todoConexo(byte CC[], byte N);
 void Kruskal(byte G[][MAX_VERTICES], byte N, byte A[][MAX_VERTICES]);
 byte todoVisitado(byte VV[], byte N);
-void Prim(byte G[][MAX_VERTICES], byte N, byte VV[], byte A[][MAX_VERTICES]);
+void Prim(byte G[][MAX_VERTICES], byte N, byte A[][MAX_VERTICES]);
 void imprimirMatriz(byte A[][MAX_VERTICES], byte N);
 
 int main()
 {
-    byte G[MAX_VERTICES][MAX_VERTICES], A[MAX_VERTICES][MAX_VERTICES], N, *VV;
+    byte G[MAX_VERTICES][MAX_VERTICES], A[MAX_VERTICES][MAX_VERTICES], N, *VV, i, j;
     cargarGrafo(G, &N);
 
     Kruskal(G, N, A);
     printf("Kruskal: \n");
     imprimirMatriz(A, N);
 
-    Prim(G, N, VV, A);
+    Prim(G, N, A);
     printf("Prim: \n");
     imprimirMatriz(A, N);
 
@@ -42,8 +42,8 @@ void cargarGrafo(byte G[MAX_VERTICES][MAX_VERTICES], byte *N)
 
 byte todoConexo(byte CC[], byte N)
 {
-    byte i = 0;
-    while (i < N && CC[i] == 0)
+    byte i = 1;
+    while (i < N && CC[i] == CC[0])
         i++;
     return i == N;
 }
@@ -55,7 +55,7 @@ void Kruskal(byte G[][MAX_VERTICES], byte N, byte A[][MAX_VERTICES])
     // Inicializar variables
     for (i = 0; i < N; i++)
     {
-        CC[i] = i + 1;
+        CC[i] = i;
         for (j = 0; j < N; j++)
             A[i][j] = 0;
     }
@@ -65,7 +65,7 @@ void Kruskal(byte G[][MAX_VERTICES], byte N, byte A[][MAX_VERTICES])
         minAux = INFINITO;
         for (i = 0; i < N; i++)
             for (j = i; j < N; j++)
-                if (G[i][j] < minAux && G[i][j] > 0)
+                if (CC[i] != CC[j] && G[i][j] < minAux && G[i][j] > 0)
                 {
                     minAux = G[i][j];
                     iMin = i;
@@ -73,14 +73,22 @@ void Kruskal(byte G[][MAX_VERTICES], byte N, byte A[][MAX_VERTICES])
                 }
         A[iMin][jMin] = A[jMin][iMin] = G[iMin][jMin];
         for (i = 0; i < N; i++)
-            if (CC[i] == jMin)
-                CC[i] = iMin;
+            if (CC[i] == CC[jMin])
+                CC[i] = CC[iMin];
     }
 }
 
-void Prim(byte G[][MAX_VERTICES], byte N, byte VV[N], byte A[][MAX_VERTICES])
+byte todoVisitado(byte VV[], byte N)
 {
-    byte i, j;
+    byte i = 0;
+    while (i < N && VV[i])
+        i++;
+    return i == N;
+}
+
+void Prim(byte G[][MAX_VERTICES], byte N, byte A[][MAX_VERTICES])
+{
+    byte i, j, iMin, jMin, minAux, VV[N];
 
     // Inicializar variables
     for (i = 0; i < N; i++)
@@ -88,5 +96,33 @@ void Prim(byte G[][MAX_VERTICES], byte N, byte VV[N], byte A[][MAX_VERTICES])
         VV[i] = 0;
         for (j = 0; j < N; j++)
             A[i][j] = 0;
+    }
+    VV[0] = 1;
+
+    while (!todoVisitado(VV, N))
+    {
+        minAux = INFINITO;
+        for (i = 0; i < N; i++)
+            if (VV[i])
+                for (j = 0; j < N; j++)
+                    if (0 < G[i][j] && G[i][j] < minAux && !VV[j])
+                    {
+                        iMin = i;
+                        jMin = j;
+                        minAux = G[i][j];
+                    }
+        A[iMin][jMin] = A[jMin][iMin] = G[iMin][jMin];
+        VV[jMin] = 1;
+    }
+}
+
+void imprimirMatriz(byte A[][MAX_VERTICES], byte N)
+{
+    byte i, j;
+    for (i = 0; i < N; i++)
+    {
+        for (j = 0; j < N; j++)
+            printf("%hu ", A[i][j]);
+        printf("\n");
     }
 }
