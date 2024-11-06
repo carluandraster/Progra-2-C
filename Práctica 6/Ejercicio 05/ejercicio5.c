@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "TDA Cola/cola.h"
 #include "TDA Pila/pila.h"
+#define INFINITO 31999
 
 typedef TCola TElementoL;
 typedef struct nodo
@@ -13,7 +14,7 @@ typedef nodo *TLista;
 void crearCola(TCola *C, int V[], int N);
 void addnodo(TLista *L, TElementoL e);
 void cargarLista(TLista *L);
-TElementoC maximo(TCola C);
+void maximo(TCola C, TElementoC *max);
 void generarPila(TLista L, TPila *P);
 void mostrarPila(TPila P);
 
@@ -22,7 +23,6 @@ int main()
     TLista L = NULL;
     TPila P;
     cargarLista(&L);
-    printf("Hola");
     IniciaP(&P);
     generarPila(L, &P);
     printf("Maximos de cada cola: ");
@@ -43,6 +43,7 @@ void addnodo(TLista *L, TElementoL e)
     TLista aux, ant = NULL, nuevo;
     TElementoC x;
     nuevo = (TLista)malloc(sizeof(nodo));
+    IniciaC(&nuevo->dato);
     while (!VaciaC(e))
     {
         sacaC(&e, &x);
@@ -69,40 +70,47 @@ void cargarLista(TLista *L)
     int V[MAX], i, N;
     FILE *archivo;
     archivo = fopen("numeros.txt", "rt");
-    while (fscanf(archivo, "%d", &N))
+    while (!feof(archivo))
     {
+        fscanf(archivo, "%d ", &N);
         for (i = 0; i < N; i++)
-            fscanf(archivo, "%d", &V[i]);
+            fscanf(archivo, "%d ", &V[i]);
         crearCola(&C, V, N);
         addnodo(L, C);
     }
     fclose(archivo);
 }
 
-TElementoC maximo(TCola C)
+void maximo(TCola C, TElementoC *max)
 {
     TCola aux;
-    TElementoC maxAux, x;
+    TElementoC x;
     IniciaC(&aux);
-    sacaC(&C, &maxAux);
-    poneC(&aux, maxAux);
     while (!VaciaC(C))
     {
         sacaC(&C, &x);
         poneC(&aux, x);
-        if (x > maxAux)
-            maxAux = x;
+        if (x > *max)
+            *max = x;
+    }
+    while (!VaciaC(aux))
+    {
+        sacaC(&aux, &x);
+        poneC(&C, x);
     }
 }
 
 void generarPila(TLista L, TPila *P)
 {
     TLista aux;
+    TElementoC max;
     IniciaP(P);
     aux = L;
     while (aux != NULL)
     {
-        poneP(P, maximo(aux->dato));
+        max = -INFINITO;
+        maximo(aux->dato, &max);
+        poneP(P, max);
         aux = aux->sig;
     }
 }
@@ -110,11 +118,10 @@ void generarPila(TLista L, TPila *P)
 void mostrarPila(TPila P)
 {
     TElementoP x;
-    if (VaciaP(P))
+    if (!VaciaP(P))
     {
         sacaP(&P, &x);
         mostrarPila(P);
+        printf("%d ", x);
     }
-    poneP(&P, x);
-    printf("%d ", x);
 }
