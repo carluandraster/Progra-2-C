@@ -20,7 +20,7 @@ typedef struct TEquipo
 typedef TEquipo *TLista;
 
 void addnodo(TLista *L, TEquipo e, TLista *ult);
-void addnodito(TLista L, TJugador e, TLista *ult);
+void addnodito(TLista L, TJugador e, TJugador **ult);
 void cargarListaEquipos(TLista *L);
 void listarA(TLista L, char K, int *cantJugListados, char *maxEquipo);
 void listarB(TLista L, int X);
@@ -38,8 +38,8 @@ int main()
     printf("Ingrese una letra K: ");
     scanf(" %c", &K);
     listarA(L, K, &cantJugListados, maxEquipo);
-    printf("Cantidad de jugadores listados: %d\n",cantJugListados);
-    printf("Equipo con mas jugadores que empiezan por la letra solicitada: %s\n",maxEquipo);
+    printf("Cantidad de jugadores listados: %d\n", cantJugListados);
+    printf("Equipo con mas jugadores que empiezan por la letra solicitada: %s\n", maxEquipo);
     do
     {
         printf("Ingrese un puntaje X: ");
@@ -61,125 +61,85 @@ int main()
 }
 
 // Agrega un nodo a la lista principal
-void addnodo(TLista *L, TEquipo e, TLista *ult){
-    TLista aux = *ult,ant,nuevo;
+void addnodo(TLista *L, TEquipo e, TLista *ult)
+{
+    TLista aux = *ult, ant, nuevo;
     nuevo = (TLista)malloc(sizeof(TEquipo));
     *nuevo = e;
     nuevo->sig = NULL;
     if (*L == NULL)
-        *L = nuevo;
+        *L = *ult = nuevo;
     else
     {
-        while (aux != NULL)
-        {
-            ant = aux;
-            aux = aux->sig;
-        }
-        ant->sig = nuevo;
+        (*ult)->sig = nuevo;
+        *ult = (*ult)->sig;
     }
 }
 
 // Agrega un nodo a una sublista
-void addnodito(TLista L, TJugador e, TLista *ult){
-    TJugador *aux,*nuevo;
+void addnodito(TLista L, TJugador e, TJugador **ult)
+{
+    TJugador *aux, *nuevo;
     aux = L->jugadores;
     nuevo = (TJugador *)malloc(sizeof(TJugador));
     *nuevo = e;
     nuevo->sig = NULL;
     if (aux == NULL)
-        L->jugadores = aux;
+        L->jugadores = *ult = nuevo;
     else
     {
-        while (aux->sig != NULL)
-            aux = aux->sig;
-        aux->sig = nuevo;
+        (*ult)->sig = nuevo;
+        *ult = (*ult)->sig;
     }
 }
 
 // Inicializa lista de equipos
 void cargarListaEquipos(TLista *L)
 {
-    TLista aux = *L;
+    TLista ult;
     TEquipo equipo;
-    TJugador jugador;
+    TJugador jugador, *Ult;
     FILE *archivo;
-    int i,N;
+    int i, N;
 
-    archivo = fopen("equipos.txt","rt");
-    fscanf(archivo,"%s %d %d",equipo.nombre,&equipo.puntaje,&N);
-    while (!feof(archivo))
+    archivo = fopen("equipos.txt", "rt");
+    if (archivo == NULL)
+        printf("No se pudo abrir el archivo.\n");
+    else
     {
-        
-        addnodo(L,equipo);
-        for (i = 0; i < N; i++){
-            fscanf(archivo,"%s %d %c",jugador.nombre,&jugador.edad,&jugador.estado);
-            addnodito(aux,jugador);
+        while (fscanf(archivo, "%19s %d %d\n", equipo.nombre, &equipo.puntaje, &N) == 3)
+        {
+            equipo.jugadores = NULL;  // Inicializar la sublista de jugadores como vacía
+            addnodo(L, equipo, &ult); // Agregar el equipo a la lista y obtener el último nodo
+
+            for (i = 0; i < N; i++)
+            {
+                fscanf(archivo, "%19s %d %c\n", jugador.nombre, &jugador.edad, &jugador.estado);
+                addnodito(ult, jugador, &Ult); // Agregar el jugador a la sublista del equipo
+            }
         }
-        fscanf(archivo,"%s %d %d",equipo.nombre,&equipo.puntaje,&N);
+        fclose(archivo);
     }
-    
-    fclose(archivo);
-
-    TEquipo equipo1 = {"River Plate", 45, NULL, NULL};
-    TEquipo equipo2 = {"Boca Juniors", 40, NULL, NULL};
-    TEquipo equipo3 = {"Racing Club", 35, NULL, NULL};
-    TEquipo equipo4 = {"Independiente", 30, NULL, NULL};
-    
-    // Agregamos los equipos a la lista principal en orden decreciente por puntaje
-    addnodo(L, equipo1);
-    addnodo(L, equipo2);
-    addnodo(L, equipo3);
-    addnodo(L, equipo4);
-
-    // Agregamos jugadores para cada equipo
-    // River Plate
-    TJugador jugador1 = {"Franco Armani", 34, 'A', NULL};
-    TJugador jugador2 = {"Julian Alvarez", 21, 'A', NULL};
-    TJugador jugador3 = {"Enzo Perez", 35, 'A', NULL};
-    addnodito(*L, jugador1);
-    addnodito(*L, jugador2);
-    addnodito(*L, jugador3);
-
-    // Boca Juniors
-    TJugador jugador4 = {"Esteban Andrada", 31, 'A', NULL};
-    TJugador jugador5 = {"Carlos Tevez", 37, 'S', NULL};
-    TJugador jugador6 = {"Edwin Cardona", 28, 'A', NULL};
-    addnodito(aux, jugador4);
-    addnodito(aux, jugador5);
-    addnodito(aux, jugador6);
-
-    // Racing Club
-    aux = aux->sig;
-    TJugador jugador7 = {"Gabriel Arias", 33, 'A', NULL};
-    TJugador jugador8 = {"Lisandro Lopez", 38, 'S', NULL};
-    addnodito(aux, jugador7);
-    addnodito(aux, jugador8);
-
-    // Independiente
-    aux = aux->sig;
-    TJugador jugador9 = {"Sebastian Sosa", 34, 'A', NULL};
-    TJugador jugador10 = {"Silvio Romero", 33, 'A', NULL};
-    addnodito(aux, jugador9);
-    addnodito(aux, jugador10);
 }
 
 // Lista para todos los clubes los jugadores cuyo nombre comienza con la letra K
-void listarA(TLista L, char K, int *cantJugListados, char *maxEquipo){
+void listarA(TLista L, char K, int *cantJugListados, char *maxEquipo)
+{
     TLista aux = L;
     TJugador *jugador;
-    int maxJugList = -1,contador;
+    int maxJugList = -1, contador;
 
     while (aux != NULL)
     {
         contador = 0;
-        printf("%s\n",aux->nombre);
+        printf("%s\n", aux->nombre);
         jugador = aux->jugadores;
         while (jugador != NULL)
         {
             if (jugador->nombre[0] == K)
             {
                 contador++;
-                printf("%s\n",jugador->nombre);
+                printf("%s\n", jugador->nombre);
             }
             jugador = jugador->sig;
         }
@@ -188,53 +148,57 @@ void listarA(TLista L, char K, int *cantJugListados, char *maxEquipo){
         if (contador > maxJugList)
         {
             maxJugList = contador;
-            strcpy(maxEquipo,aux->nombre);
+            strcpy(maxEquipo, aux->nombre);
         }
+        aux = aux->sig;
     }
 }
 
 // Lista los clubes que tienen un mínimo de X (dato) puntos junto con todos sus jugadores,
 // mostrando edad promedio de cada equipo
-void listarB(TLista L, int X){
-    int contador,acumulador;
+void listarB(TLista L, int X)
+{
+    int contador, acumulador;
     TLista aux = L;
     TJugador *jugador;
 
     while (aux != NULL && aux->puntaje >= X)
     {
         contador = acumulador = 0;
-        printf("%s\n",aux->nombre);
+        printf("%s\n", aux->nombre);
         jugador = aux->jugadores;
         while (jugador != NULL)
         {
-            printf("%s\n",jugador->nombre);
+            printf("%s\n", jugador->nombre);
             contador++;
-            acumulador+=jugador->edad;
+            acumulador += jugador->edad;
         }
         if (contador)
-            printf("Edad promedio: %5.2f\n\n",(float)acumulador/contador);
+            printf("Edad promedio: %5.2f\n\n", (float)acumulador / contador);
         else
             printf("El equipo no registro jugadores\n\n");
     }
 }
 
 // Verifica si el equipo E tiene P puntos
-int verifica(TLista L, char *E, int P){
+int verifica(TLista L, char *E, int P)
+{
     TLista aux = L;
     /*Casos de corte:
     1. aux es NULL
     2. Se encontro el equipo
     3. El puntaje de aux es menor a P
     4. El puntaje de aux es P pero su nombre es mayor al de E*/
-    while (aux!=NULL && aux->puntaje>=P && strcmp(aux->nombre,E) && (aux->puntaje != P || strcmp(aux->nombre,E)<0))
+    while (aux != NULL && aux->puntaje >= P && strcmp(aux->nombre, E) && (aux->puntaje != P || strcmp(aux->nombre, E) < 0))
         aux = aux->sig;
-    return !strcmp(aux->nombre,E) && aux->puntaje == P;
+    return !strcmp(aux->nombre, E) && aux->puntaje == P;
 }
 
 // Elimina a los jugadores suspendidos
-void eliminar(TLista *L){
+void eliminar(TLista *L)
+{
     TLista aux = *L;
-    TJugador *ant,*elim,*siguiente;
+    TJugador *ant, *elim, *siguiente;
     while (aux != NULL)
     {
         elim = aux->jugadores;
@@ -248,7 +212,7 @@ void eliminar(TLista *L){
         }
         siguiente = elim == NULL ? NULL : elim->sig;
         // Resto de los jugadores
-        while (elim!=NULL)
+        while (elim != NULL)
         {
             if (elim->estado == 'S')
             {
@@ -263,18 +227,20 @@ void eliminar(TLista *L){
     }
 }
 
-void mostrarLista(TLista L){
-    TLista aux;
+void mostrarLista(TLista L)
+{
+    TLista aux = L;
     TJugador *jugador;
     while (aux != NULL)
     {
-        printf("%s\n",aux->nombre);
+        printf("%s %d\n", aux->nombre, aux->puntaje);
         jugador = aux->jugadores;
         while (jugador != NULL)
         {
-            printf("%s\n",jugador->nombre);
+            printf("%s %d %c\n", jugador->nombre, jugador->edad, jugador->estado);
             jugador = jugador->sig;
         }
         printf("\n");
+        aux = aux->sig;
     }
 }
