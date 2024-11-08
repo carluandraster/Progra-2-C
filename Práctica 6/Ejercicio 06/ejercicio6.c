@@ -22,7 +22,7 @@ typedef TEquipo *TLista;
 void addnodo(TLista *L, TEquipo e, TLista *ult);
 void addnodito(TLista L, TJugador e, TJugador **ult);
 void cargarListaEquipos(TLista *L);
-void listarA(TLista L, char K, int *cantJugListados, char *maxEquipo);
+void listarA(TLista L, char K, int *cantJugListados, char maxEquipo[]);
 void listarB(TLista L, int X);
 int verifica(TLista L, char *E, int P);
 void eliminar(TLista *L);
@@ -32,7 +32,7 @@ int main()
 {
     TLista L = NULL;
     int X, cantJugListados = 0, P;
-    char K, *maxEquipo, *E;
+    char K, maxEquipo[MAXCAR], E[MAXCAR];
 
     cargarListaEquipos(&L);
     printf("Ingrese una letra K: ");
@@ -44,7 +44,7 @@ int main()
     {
         printf("Ingrese un puntaje X: ");
         scanf("%d", &X);
-    } while (X > 0);
+    } while (X < 0);
     listarB(L, X);
     printf("Ingrese un equipo: ");
     scanf("%s", E);
@@ -123,7 +123,7 @@ void cargarListaEquipos(TLista *L)
 }
 
 // Lista para todos los clubes los jugadores cuyo nombre comienza con la letra K
-void listarA(TLista L, char K, int *cantJugListados, char *maxEquipo)
+void listarA(TLista L, char K, int *cantJugListados, char maxEquipo[])
 {
     TLista aux = L;
     TJugador *jugador;
@@ -172,11 +172,13 @@ void listarB(TLista L, int X)
             printf("%s\n", jugador->nombre);
             contador++;
             acumulador += jugador->edad;
+            jugador = jugador->sig;
         }
         if (contador)
             printf("Edad promedio: %5.2f\n\n", (float)acumulador / contador);
         else
             printf("El equipo no registro jugadores\n\n");
+        aux = aux->sig;
     }
 }
 

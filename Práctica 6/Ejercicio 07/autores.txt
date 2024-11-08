@@ -1,0 +1,32 @@
+Gabriel_Garcia_Marquez
+Cien_Anios_de_Soledad 1992
+El_Amor_en_los_Tiempos_del_Cólera 1952
+Crónica_de_una_Muerte_Anunciada 2024
+
+Jane_Austen
+Orgullo_y_Prejuicio 2011
+Emma 1970
+Persuasion 1945
+
+J.R.R._Tolkien
+El_Hobbit 1959
+La_Comunidad_del_Anillo 1970
+Las_Dos_Torres 1990
+El_Retorno_del_Rey 2024
+
+George_Orwell
+1984 1944
+Rebelión_en_la_Granja 1900
+
+Isabel_Allende
+La_Casa_de_los_Espíritus 2002
+Eva_Luna 1996
+Paula 1905
+
+Adam_Smith
+
+Brian_Kernighan
+El_lenguaje_de_programacion_C 1978
+
+Nikolai_Piskunov
+Calculo_Diferencial_e_Integral 1957
