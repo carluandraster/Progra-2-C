@@ -10,6 +10,7 @@ typedef struct TLibro
     int anio;
     struct TLibro *sig;
 } TLibro;
+typedef TLibro *TSubLista;
 typedef struct TAutor
 {
     char nombre[MAXCAR];
@@ -88,11 +89,11 @@ void agregarSocio(TListaS *S, char e[MAXCAR], TListaS *ult)
 }
 
 // Agrega un libro a una sublista de libros
-void agregarLibro(TLibro **L, char e[MAXCAR], char autor[MAXCAR], int anio, TLibro **ult)
+void agregarLibro(TSubLista *L, char e[MAXCAR], char autor[MAXCAR], int anio, TSubLista *ult)
 {
-    TLibro *aux, *nuevo;
+    TSubLista aux, nuevo;
     aux = *L;
-    nuevo = (TLibro *)malloc(sizeof(TLibro));
+    nuevo = (TSubLista)malloc(sizeof(TLibro));
     strcpy(nuevo->titulo, e);
     strcpy(nuevo->autor, autor);
     nuevo->anio = anio;
@@ -118,10 +119,10 @@ void cargarBiblioteca(TListaA AUTORES[MAXELEM])
     for (i = 0; i < MAXELEM; i++)
         AUTORES[i] = NULL;
     archivo = fopen("autores.txt", "rt");
-    while (fscanf(archivo, "%31s\n", nombreAutor))
+    while (fscanf(archivo, "%31s\n", nombreAutor) == 1)
     {
         agregarAutor(&AUTORES[nombreAutor[0] - 65], nombreAutor, &ult);
-        while (fscanf(archivo, "%31s %d\n", nombre, &anio)) // Ciclo infinito
+        while (fscanf(archivo, "%31s %d\n", nombre, &anio) == 2)
             agregarLibro(&ult->libros, nombre, nombreAutor, anio, &Ult);
     }
     fclose(archivo);
@@ -137,17 +138,17 @@ void cargarSocios(TListaS *S)
     TLibro *Ult;
 
     archivo = fopen("socios.txt", "rt");
-    while (fscanf(archivo, "%s", nombreSocio))
+    while (fscanf(archivo, "%s", nombreSocio) == 1)
     {
         agregarSocio(S, nombreSocio, &ult);
-        while (fscanf(archivo, "%s %s %d", nombreAutor, nombreLibro, &anio))
+        while (fscanf(archivo, "%s %s %d", nombreAutor, nombreLibro, &anio) == 3)
             agregarLibro(&ult->libros, nombreLibro, nombreAutor, anio, &Ult);
     }
     fclose(archivo);
 }
 
 // Dado el nombre de un autor, devuelve un puntero a ese autor (NULL si el autor no existe)
-void buscarAutor(TListaA AUTORES[], char nombre[], TListaA *autor)
+void buscarAutor(TListaA AUTORES[], char nombre[], TListaA *autor) // Revisar esta funcion
 {
     *autor = AUTORES[nombre[0] - 65];
     while (*autor != NULL && strcmp((*autor)->nombre, nombre) < 0)
