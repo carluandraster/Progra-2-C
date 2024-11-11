@@ -48,7 +48,9 @@ int main()
     registrarPrestamo(AUTORES, Socios, "Andres_Efstratiadis", "Brian_Kernighan", "El_lenguaje_de_programacion_C");
     registrarPrestamo(AUTORES, Socios, "Andres_Efstratiadis", "Nikolai_Piskunov", "Calculo_Diferencial_e_Integral");
     registrarDevoluciones(AUTORES, Socios, "Laureano_Ahmad", "Adam_Smith", "La_riqueza_de_las_naciones");
+    printf("Biblioteca: \n");
     mostrarAutores(AUTORES);
+    printf("Socios: \n");
     mostrarSocios(Socios);
 
     return 0;
@@ -119,10 +121,10 @@ void cargarBiblioteca(TListaA AUTORES[MAXELEM])
     for (i = 0; i < MAXELEM; i++)
         AUTORES[i] = NULL;
     archivo = fopen("autores.txt", "rt");
-    while (fscanf(archivo, "%31s\n", nombreAutor) == 1)
+    while (fscanf(archivo, "%s", nombreAutor) == 1)
     {
         agregarAutor(&AUTORES[nombreAutor[0] - 65], nombreAutor, &ult);
-        while (fscanf(archivo, "%31s %d\n", nombre, &anio) == 2)
+        while (fscanf(archivo, "%s %d", nombre, &anio) == 2)
             agregarLibro(&ult->libros, nombre, nombreAutor, anio, &Ult);
     }
     fclose(archivo);
@@ -153,7 +155,7 @@ void buscarAutor(TListaA AUTORES[], char nombre[], TListaA *autor) // Revisar es
     *autor = AUTORES[nombre[0] - 65];
     while (*autor != NULL && strcmp((*autor)->nombre, nombre) < 0)
         *autor = (*autor)->sig;
-    if (strcmp((*autor)->nombre, nombre) > 0)
+    if (*autor == NULL || strcmp((*autor)->nombre, nombre) > 0)
         *autor = NULL;
 }
 
@@ -208,7 +210,7 @@ void registrarPrestamo(TListaA AUTORES[MAXELEM], TListaS S, char socio[MAXCAR], 
 void registrarDevoluciones(TListaA AUTORES[MAXELEM], TListaS S, char socio[MAXCAR], char autor[MAXCAR], char libro[MAXCAR])
 {
     TListaA act;
-    TLibro *Libro, *ant;
+    TSubLista Libro, ant;
     TListaS aux;
 
     buscarAutor(AUTORES, autor, &act);
