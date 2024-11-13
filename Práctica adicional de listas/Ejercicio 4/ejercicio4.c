@@ -113,7 +113,10 @@ int main()
                 printf("Ingrese documento: ");
                 scanf(" %s", DNI);
                 if (respuesta == 1)
-                    addDNI(&vuelo->pasajeros, DNI);
+                    if (cantReservas(vuelo) == vuelo->capacidad)
+                        printf("Lo sentimos, este vuelo ya esta lleno\n");
+                    else
+                        addDNI(&vuelo->pasajeros, DNI);
                 else
                     removeDNI(&vuelo->pasajeros, DNI);
             }
@@ -132,6 +135,8 @@ int main()
         printf("No se encontro destino\n");
     else
         listarEstados(dest);
+
+    // mostrarLista(D);
 
     return 0;
 }
@@ -248,8 +253,41 @@ int cantReservas(TSubLista V)
 void listarEstados(TLista destino)
 {
     TSubLista aux = destino->vuelos;
+    int reservas;
     while (aux != NULL)
     {
-        /* code */
+        reservas = cantReservas(aux);
+        printf("Codigo de vuelo: %s\n", aux->codigo);
+        printf("Cantidad de reservas: %d\n", reservas);
+        if (reservas == aux->capacidad)
+            printf("Vuelo lleno\n");
+        else
+            printf("Lugares disponibles: %d\n", aux->capacidad - reservas);
+        aux = aux->sig;
+    }
+}
+
+void mostrarLista(TLista D)
+{
+    TLista aux1 = D;
+    TSubLista aux2;
+    TListaDNI aux3;
+    while (aux1 != NULL)
+    {
+        printf("Destino: %s\n", aux1->destino);
+        aux2 = aux1->vuelos;
+        while (aux2 != NULL)
+        {
+            printf("\tCodigo de vuelo: %s\n", aux2->codigo);
+            aux3 = aux2->pasajeros;
+            printf("\t\tReservas: \n");
+            while (aux3 != NULL)
+            {
+                printf("\t\t%s\n", aux3->DNI);
+                aux3 = aux3->sig;
+            }
+            aux2 = aux2->sig;
+        }
+        aux1 = aux1->sig;
     }
 }
