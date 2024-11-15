@@ -1,0 +1,5 @@
+C Mar_del_Plata_Norte 2 E D
+D Mar_del_Plata_Sur 2 C E
+E Miramar 3 A C G
+F Necochea 3 C C D
+G Claromeco 5 B C D D E

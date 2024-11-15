@@ -6,8 +6,8 @@ typedef struct
 } TElementoC;
 typedef struct
 {
-    TElementoC dominio[MAX];
-    int pri,ult;
+    TElementoC dato[MAX];
+    int pri, ult;
 } TCola;
 
 void IniciaC(TCola *C);
