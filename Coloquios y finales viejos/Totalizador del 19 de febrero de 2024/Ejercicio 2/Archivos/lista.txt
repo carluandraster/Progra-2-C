@@ -1,0 +1,14 @@
+1 3
+DUKI0015 She_Don't_Give_a_Fo 150
+DUKI0023 Givenchy            180
+DUKI0031 Rockstar_2.0        210
+2 2
+JBAL0045 Mi_Gente            190
+JBAL0052 Safari              175
+3 4
+BADB0063 Yonaguni            200
+BADB0070 Dakiti              220
+BADB0077 Amorfoda            210
+BADB0081 La_Cancion          230
+4 1
+RIHA0090 Diamonds            215
